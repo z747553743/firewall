@@ -2,6 +2,9 @@
 #define __PROTO_ANALYSIS_H__
 #include <linux/ip.h>
 #include <net/tcp.h>
+#include <linux/init.h>
+#include <linux/module.h>
+#include <linux/kernel.h>
 #include <linux/netfilter.h>
 #include <linux/netfilter_ipv4.h>
 
@@ -13,15 +16,14 @@ struct proto_info {
 	unsigned short d_port;
 };
 
-void get_protocol(struct sk_buff *sk, struct proto_info * proto){
-	struct iphdr * iph = ip_hdr(sk);
+void get_protocol(struct sk_buff *skb, struct proto_info * proto){
+	struct iphdr * iph = ip_hdr(skb);
 	struct tcphdr * tcph = NULL;
 	struct udphdr * udph = NULL;
 	proto->proto = iph->protocol;
-	return;
+	printk(KERN_ALERT "analysis %d proto\n",iph->protocol);
 	proto->s_ip = iph->saddr;
 	proto->d_ip = iph->daddr;
-	
 	
 	switch(iph->protocol){
 		case IPPROTO_TCP:

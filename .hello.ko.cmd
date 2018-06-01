@@ -1,0 +1,1 @@
+cmd_/home/zlw/firewall/firewall/hello.ko := ld -r -m elf_x86_64 -T ./scripts/module-common.lds --build-id  -o /home/zlw/firewall/firewall/hello.ko /home/zlw/firewall/firewall/hello.o /home/zlw/firewall/firewall/hello.mod.o

@@ -12,17 +12,14 @@ MODULE_LICENSE("GPL");
 static struct nf_hook_ops nfho;
 /* 注册的hook函数的实现 */
 unsigned int hook_func(unsigned int hooknum,
-	struct sk_buff **skb,
+	struct sk_buff *skb,
 	const struct net_device *in,
 	const struct net_device *out,
 	int (*okfn)(struct sk_buff *))
 {
-	struct sk_buff * sk = *skb;
 	struct proto_info proto = {0,0,0,0,0};
-	get_protocol(sk, &proto);
-	proto.proto = IPPROTO_TCP;
+	get_protocol(skb, &proto);
 	printk(KERN_ALERT "get %d data\n",proto.proto);
-	return NF_ACCEPT;
 	switch(proto.proto){
 		case IPPROTO_TCP:
 			printk(KERN_ALERT "get tcp data\n");
@@ -56,4 +53,5 @@ module_exit(firewall_exit);
 MODULE_AUTHOR("Liangwei Zeng");
 MODULE_DESCRIPTION("HAHA");
 MODULE_VERSION("0.0.1");
+
 
