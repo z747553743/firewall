@@ -20,9 +20,6 @@ unsigned int hook_func(unsigned int hooknum,
 	struct sk_buff * sk = *skb;
 	struct proto_info proto = {0,0,0,0,0};
 	get_protocol(sk, &proto);
-	proto.proto = IPPROTO_TCP;
-	printk(KERN_ALERT "get %d data\n",proto.proto);
-	return NF_ACCEPT;
 	switch(proto.proto){
 		case IPPROTO_TCP:
 			printk(KERN_ALERT "get tcp data\n");
