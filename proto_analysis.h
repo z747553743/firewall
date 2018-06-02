@@ -5,14 +5,14 @@
 #define __PROTO_ANALYSIS_H__
 #include <linux/ip.h>
 #include <net/tcp.h>
-#include <linux/init.h>
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/netfilter.h>
 #include <linux/netfilter_ipv4.h>
 
 
-struct proto_info {
+struct proto_info 
+{
 	unsigned char proto;
 	unsigned int s_ip;
 	unsigned short s_port;
@@ -21,7 +21,8 @@ struct proto_info {
 };
 
 /* 解析sk_buff中的协议信息 */
-void get_protocol(struct sk_buff *skb, struct proto_info * proto){
+void get_protocol(struct sk_buff *skb, struct proto_info * proto)
+{
 	struct iphdr * iph = ip_hdr(skb);
 	struct tcphdr * tcph = NULL;
 	struct udphdr * udph = NULL;

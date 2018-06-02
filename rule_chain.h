@@ -4,6 +4,7 @@
  */
 #ifndef __RULE_CHAIN_H__
 #define __RULE_CHAIN_H__
+#include <linux/slab.h>
 /* 策略标志宏 */
 #define FW_ACCEPT 0
 #define FW_DROP 1
@@ -21,13 +22,13 @@ struct rule_chain{
 	unsigned char policy; //使用策略
 };
 
-/* 申请新规则链 */
+/* 申请新规则链节点 */
 struct rule_chain * create_rule_chain(
 	unsigned int s_addr, unsigned int s_mask, unsigned short s_port,
 	unsigned int d_addr, unsigned int d_mask, unsigned short d_port,
 	unsigned char policy)
 {
-	struct rule_chain * new_chain = (struct rule_chain *) malloc(sizeof(rule_chain));
+	struct rule_chain * new_chain = (struct rule_chain *) kmalloc(sizeof(rule_chain));
 	if(new_chain == NULL) // 申请失败
 		return new_chain;
 	new_chain->pre = NULL;
@@ -39,6 +40,13 @@ struct rule_chain * create_rule_chain(
 	new_chain->d_mask = d_mask;
 	new_chain->d_port = d_port;
 	return new_chain;
+}
+
+/* 释放规则链节点 */
+void destroy_rule_chain(struct rule_chain * chain)
+{
+	if(chain != NULL)
+		kfree(chain);
 }
 
 #endif
