@@ -1,3 +1,6 @@
+/* 
+	解析IP包中IP地址、协议、以及端口的相关结构和函数
+ */
 #ifndef __PROTO_ANALYSIS_H__
 #define __PROTO_ANALYSIS_H__
 #include <linux/ip.h>
@@ -8,6 +11,7 @@
 #include <linux/netfilter.h>
 #include <linux/netfilter_ipv4.h>
 
+
 struct proto_info {
 	unsigned char proto;
 	unsigned int s_ip;
@@ -16,6 +20,7 @@ struct proto_info {
 	unsigned short d_port;
 };
 
+/* 解析sk_buff中的协议信息 */
 void get_protocol(struct sk_buff *skb, struct proto_info * proto){
 	struct iphdr * iph = ip_hdr(skb);
 	struct tcphdr * tcph = NULL;
