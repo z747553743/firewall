@@ -12,4 +12,4 @@ install:
 uninstall:
 	rmmod hello.ko 
 clean:
-	rm -rf *.o *.ko *.mod.* *.symvers *.order
+	rm -rf *.o *.ko *.mod.* *.symvers *.order *.cmd .*.cmd .*.swp
