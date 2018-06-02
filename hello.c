@@ -29,7 +29,7 @@ unsigned int nf_hook_in_func(unsigned int hooknum,
 			break;
 		case IPPROTO_ICMP:
 			printk(KERN_ALERT "get icmp data\n");
-			return NF_DROP;s
+			return NF_DROP;
 			break;
 		default:
 			printk(KERN_ALERT "get other data\n");
