@@ -1,5 +1,7 @@
 /* 
 	解析IP包中IP地址、协议、以及端口的相关结构和函数
+	author: ZengLiangwei
+	email: 747553743@qq.com
  */
 #ifndef __PROTO_ANALYSIS_H__
 #define __PROTO_ANALYSIS_H__
@@ -14,9 +16,9 @@
 struct proto_info 
 {
 	unsigned char proto;
-	unsigned int s_ip;
+	unsigned int s_addr;
 	unsigned short s_port;
-	unsigned int d_ip;
+	unsigned int d_addr;
 	unsigned short d_port;
 };
 
@@ -28,19 +30,19 @@ void get_protocol(struct sk_buff *skb, struct proto_info * proto)
 	struct udphdr * udph = NULL;
 	proto->proto = iph->protocol;
 	printk(KERN_ALERT "analysis %d proto\n",iph->protocol);
-	proto->s_ip = iph->saddr;
-	proto->d_ip = iph->daddr;
+	proto->s_addr = ntohl(iph->saddr);
+	proto->d_addr = ntohl(iph->daddr);
 	
 	switch(iph->protocol){
 		case IPPROTO_TCP:
 			tcph = (struct tcphdr *) (iph + iph->ihl * 4);
-			proto->s_port = tcph->source;
-			proto->d_port = tcph->dest;
+			proto->s_port = ntohs(tcph->source);
+			proto->d_port = ntohs(tcph->dest);
 			break;
 		case IPPROTO_UDP:
 			udph = (struct udphdr *) (iph + iph->ihl * 4);
-			proto->s_port = udph->source;
-			proto->d_port = udph->dest;
+			proto->s_port = ntohs(udph->source);
+			proto->d_port = ntohs(udph->dest);
 			break;
 	}
 }

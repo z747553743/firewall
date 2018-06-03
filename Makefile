@@ -1,5 +1,6 @@
-#at first type on ur terminal that $(uname -r) then u will get the version..
-# that is using on ur system
+# 防火墙的Makefile文件
+# author: ZengLiangwei
+# email: 747553743@qq.com
  
 obj-m += firewall.o
  

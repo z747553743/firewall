@@ -1,6 +1,8 @@
 /* 
 	防火墙INPUT，OUTPUT，FORWARD链相关的结构以及宏定义
 	包含对链节点处理的基本函数
+	author: ZengLiangwei
+	email: 747553743@qq.com
  */
 #ifndef __RULE_CHAIN_H__
 #define __RULE_CHAIN_H__
@@ -19,6 +21,7 @@ struct rule_chain{
 	unsigned int d_addr; //目的IP地址
 	unsigned int d_mask; //目的IP地址掩码
 	unsigned short d_port; //目的端口
+	unsigned char proto; //协议类型
 	unsigned char policy; //使用策略
 };
 
@@ -26,7 +29,7 @@ struct rule_chain{
 struct rule_chain * create_rule_chain(
 	unsigned int s_addr, unsigned int s_mask, unsigned short s_port,
 	unsigned int d_addr, unsigned int d_mask, unsigned short d_port,
-	unsigned char policy)
+	unsigned char proto, unsigned char policy)
 {
 	struct rule_chain * new_chain = (struct rule_chain *) kmalloc(sizeof(struct rule_chain), GFP_KERNEL);
 	if(new_chain == NULL) // 申请失败
@@ -39,6 +42,8 @@ struct rule_chain * create_rule_chain(
 	new_chain->d_addr = d_addr;
 	new_chain->d_mask = d_mask;
 	new_chain->d_port = d_port;
+	new_chain->proto = proto;
+	new_chain->policy = policy;
 	return new_chain;
 }
 
@@ -49,5 +54,33 @@ void destroy_rule_chain(struct rule_chain ** chain)
 		kfree(*chain);
 	*chain = NULL;
 }
+
+/* 插入规则链节点 */
+void insert_rule_chain(struct rule_chain ** head, struct rule_chain * node, int index)
+{
+	if(index < 0 || node == NULL)
+		return;
+	int i = 0;
+	struct rule_chain * pre_node = NULL, *tmp_node = *head;
+	while(i < index && tmp_node != NULL){
+		pre_node = tmp_node;
+		tmp_node = tmp_node->next;
+		i++;
+	}
+	if(pre_node == NULL){
+		node->next = tmp_node;
+		tmp_node->pre = node;
+		*head = node;
+	}
+	else{
+		node->next = pre_node->next;
+		node->next->pre = node;
+		node->pre = pre_node;
+		pre_node->next = node;
+	}
+}
+
+/* 删除规则链节点 */
+void delete_rule_chain(struct rule_chain ** head, struct rule_chain * node){}
 
 #endif
