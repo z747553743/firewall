@@ -11,6 +11,10 @@
 #define FW_ACCEPT 0
 #define FW_DROP 1
 
+/* 通用宏 */
+#define ALL_POLICY 0
+#define ALL_PORT 0
+
 /* 规则链节点 */
 struct rule_chain{
 	struct rule_chain * pre; //前向指针
@@ -69,7 +73,8 @@ void insert_rule_chain(struct rule_chain ** head, struct rule_chain * node, int 
 	}
 	if(pre_node == NULL){
 		node->next = tmp_node;
-		tmp_node->pre = node;
+		if(tmp_node != NULL)
+			tmp_node->pre = node;
 		*head = node;
 	}
 	else{
@@ -81,6 +86,17 @@ void insert_rule_chain(struct rule_chain ** head, struct rule_chain * node, int 
 }
 
 /* 删除规则链节点 */
-void delete_rule_chain(struct rule_chain ** head, struct rule_chain * node){}
+void delete_rule_chain(struct rule_chain ** head, struct rule_chain * node)
+{
+	if(*head == node){
+		*head = node->next;
+		node->next->pre = NULL;
+	}
+	else{
+		node->pre->next = node->next;
+		node->next->pre = node->pre;
+	}
+	destroy_rule_chain(&node);
+}
 
 #endif

@@ -47,8 +47,4 @@ void get_protocol(struct sk_buff *skb, struct proto_info * proto)
 	}
 }
 
-
-
-
 #endif
-

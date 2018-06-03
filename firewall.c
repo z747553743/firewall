@@ -10,6 +10,7 @@
 #include <linux/netfilter.h>
 #include <linux/netfilter_ipv4.h>
 #include <linux/ip.h>
+#include <linux/inet.h>
 #include "proto_analysis.h"
 #include "rule_chain.h"
 #include "rule_pattern.h"
@@ -52,9 +53,9 @@ static int __init firewall_init(void){
 	nfho_in.pf       = PF_INET;
 	nfho_in.priority = NF_IP_PRI_FIRST;   /* 定义优先级 */
 	nf_register_hook(&nfho_in);  //将Local_IN钩子注册到内核中
-	in_chain_head = create_rule_chain(0, 0, 0, 0, 0, 0, IPPROTO_TCP, FW_DROP);
-	out_chain_head = create_rule_chain(0, 0, 0, 0, 0, 0, IPPROTO_TCP, FW_ACCEPT);
-	forward_chain_head = create_rule_chain(0, 0, 0, 0, 0, 0, IPPROTO_TCP, FW_ACCEPT);
+	in_chain_head = create_rule_chain(ntohl(in_aton("119.75.213.61")), 0xFFFF0000, ALL_PORT, 0, 0x0, ALL_PORT, ALL_POLICY, FW_DROP);
+	out_chain_head = create_rule_chain(0, 0x0, ALL_PORT, 0, 0x0, ALL_PORT, IPPROTO_TCP, FW_ACCEPT);
+	forward_chain_head = create_rule_chain(0, 0x0, ALL_PORT, 0, 0x0, ALL_PORT, IPPROTO_TCP, FW_ACCEPT);
 	return 0;
 }
 
@@ -65,10 +66,9 @@ static void __exit firewall_exit(void){
 	nf_unregister_hook(&nfho_in); //将Local_IN钩子从内核中删除
 	printk(KERN_INFO "fire wall module exit\n");
 }
+
 module_init(firewall_init);
 module_exit(firewall_exit);
-MODULE_AUTHOR("Liangwei Zeng");
-MODULE_DESCRIPTION("HAHA");
+MODULE_AUTHOR("ZengLiangwei");
+MODULE_DESCRIPTION("FireWall practice");
 MODULE_VERSION("0.0.1");
-
-
