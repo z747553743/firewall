@@ -1,7 +1,7 @@
 /* 
 	防火墙内核模块
-	author: ZengLiangwei
-	email: 747553743@qq.com
+	Author: ZengLiangwei
+	Email: 747553743@qq.com
  */
 
 #include <linux/init.h>

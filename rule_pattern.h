@@ -1,7 +1,7 @@
 /* 
 	将规则链上与数据特征进行匹配的相关函数
-	author: ZengLiangwei
-	email: 747553743@qq.com
+	Author: ZengLiangwei
+	Email: 747553743@qq.com
  */
 
 #ifndef __RULE_PATTERN_H__

@@ -1,6 +1,6 @@
 # 防火墙的Makefile文件
-# author: ZengLiangwei
-# email: 747553743@qq.com
+# Author: ZengLiangwei
+# Email: 747553743@qq.com
  
 obj-m += firewall.o
  

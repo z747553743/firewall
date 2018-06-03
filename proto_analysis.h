@@ -1,7 +1,7 @@
 /* 
 	解析IP包中IP地址、协议、以及端口的相关结构和函数
-	author: ZengLiangwei
-	email: 747553743@qq.com
+	Author: ZengLiangwei
+	Email: 747553743@qq.com
  */
 #ifndef __PROTO_ANALYSIS_H__
 #define __PROTO_ANALYSIS_H__

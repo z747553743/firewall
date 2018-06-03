@@ -1,8 +1,8 @@
 /* 
 	防火墙INPUT，OUTPUT，FORWARD链相关的结构以及宏定义
 	包含对链节点处理的基本函数
-	author: ZengLiangwei
-	email: 747553743@qq.com
+	Author: ZengLiangwei
+	Email: 747553743@qq.com
  */
 #ifndef __RULE_CHAIN_H__
 #define __RULE_CHAIN_H__
