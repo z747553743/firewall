@@ -28,7 +28,7 @@ struct rule_chain * create_rule_chain(
 	unsigned int d_addr, unsigned int d_mask, unsigned short d_port,
 	unsigned char policy)
 {
-	struct rule_chain * new_chain = (struct rule_chain *) kmalloc(sizeof(rule_chain));
+	struct rule_chain * new_chain = (struct rule_chain *) kmalloc(sizeof(struct rule_chain), GFP_KERNEL);
 	if(new_chain == NULL) // 申请失败
 		return new_chain;
 	new_chain->pre = NULL;
@@ -43,10 +43,11 @@ struct rule_chain * create_rule_chain(
 }
 
 /* 释放规则链节点 */
-void destroy_rule_chain(struct rule_chain * chain)
+void destroy_rule_chain(struct rule_chain ** chain)
 {
-	if(chain != NULL)
-		kfree(chain);
+	if(*chain != NULL)
+		kfree(*chain);
+	*chain = NULL;
 }
 
 #endif
