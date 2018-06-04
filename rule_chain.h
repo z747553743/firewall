@@ -85,6 +85,22 @@ void insert_rule_chain(struct rule_chain ** head, struct rule_chain * node, int 
 	}
 }
 
+/* 规则链最后插入节点 */
+void append_rule_chain(struct rule_chain ** head, struct rule_chain * node)
+{
+	struct rule_chain * tmp_node = *head;
+	if(node == NULL)
+		return;
+	if(*head == NULL)
+		*head = node;
+	else{
+		while(tmp_node->next != NULL)
+			tmp_node = tmp_node->next;
+		tmp_node->next = node;
+		node->pre = tmp_node;
+	}
+}
+
 /* 删除规则链节点 */
 void delete_rule_chain(struct rule_chain ** head, struct rule_chain * node)
 {

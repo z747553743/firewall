@@ -29,18 +29,16 @@ void get_protocol(struct sk_buff *skb, struct proto_info * proto)
 	struct tcphdr * tcph = NULL;
 	struct udphdr * udph = NULL;
 	proto->proto = iph->protocol;
-	printk(KERN_ALERT "analysis %d proto\n",iph->protocol);
 	proto->s_addr = ntohl(iph->saddr);
 	proto->d_addr = ntohl(iph->daddr);
-	
 	switch(iph->protocol){
 		case IPPROTO_TCP:
-			tcph = (struct tcphdr *) (iph + iph->ihl * 4);
+			tcph = (struct tcphdr *) ((u8 *) iph + (iph->ihl << 2));
 			proto->s_port = ntohs(tcph->source);
 			proto->d_port = ntohs(tcph->dest);
 			break;
 		case IPPROTO_UDP:
-			udph = (struct udphdr *) (iph + iph->ihl * 4);
+			udph = (struct udphdr *) ((u8 *) iph + (iph->ihl << 2));
 			proto->s_port = ntohs(udph->source);
 			proto->d_port = ntohs(udph->dest);
 			break;
