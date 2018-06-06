@@ -52,7 +52,7 @@ struct rule_chain * create_rule_chain(
 }
 
 /* 释放规则链节点 */
-void destroy_rule_chain(struct rule_chain ** chain)
+void destroy_rule_chain_node(struct rule_chain ** chain)
 {
 	if(*chain != NULL)
 		kfree(*chain);
@@ -102,8 +102,10 @@ void append_rule_chain(struct rule_chain ** head, struct rule_chain * node)
 }
 
 /* 删除规则链节点 */
-void delete_rule_chain(struct rule_chain ** head, struct rule_chain * node)
+void delete_rule_chain_node(struct rule_chain ** head, struct rule_chain * node)
 {
+	if(node == NULL)
+		return;
 	if(*head == node){
 		*head = node->next;
 		node->next->pre = NULL;
@@ -112,7 +114,19 @@ void delete_rule_chain(struct rule_chain ** head, struct rule_chain * node)
 		node->pre->next = node->next;
 		node->next->pre = node->pre;
 	}
-	destroy_rule_chain(&node);
+	destroy_rule_chain_node(&node);
+}
+
+/* 删除整条规则链 */
+void delete_rule_chain(struct rule_chain ** head){
+	struct rule_chain * node = *head;
+	struct rule_chain * next_node = NULL;
+	while(node != NULL){
+		next_node = node->next;
+		destroy_rule_chain_node(&node);
+		node = next_node;
+	}
+	*head = NULL;
 }
 
 #endif

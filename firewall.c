@@ -14,6 +14,7 @@
 #include "proto_analysis.h"
 #include "rule_chain.h"
 #include "rule_pattern.h"
+#include "kernel_log_io.h"
 
 MODULE_LICENSE("GPL");
 
@@ -83,8 +84,6 @@ unsigned int nf_hook_forward_func(unsigned int hooknum,
 		return NF_ACCEPT;
 	struct proto_info proto = {0,0,0,0,0};
 	get_protocol(skb, &proto);
-	if(proto.proto == IPPROTO_TCP)
-		printk(KERN_INFO "sport: %d, dport: %d\n", proto.s_port, proto.d_port);
 	switch(search_rule_chain(forward_chain_head, &proto)){
 		case FW_ACCEPT:
 			return NF_ACCEPT;
@@ -96,6 +95,10 @@ unsigned int nf_hook_forward_func(unsigned int hooknum,
 
 static int __init firewall_init(void){
 	printk(KERN_INFO "fire wall module init\n");
+	if(read_kernel_file() == 0)
+		printk(KERN_INFO "read file success!\n");
+	else
+		printk(KERN_INFO "read file fail!\n");
 	nfho_in.hook = nf_hook_in_func;         /* 该钩子对应的处理函数 */
 	nfho_in.hooknum  = NF_INET_LOCAL_IN; /* 使用IPv4的LOCAL_IN钩子 */
 	nfho_in.pf       = PF_INET;
@@ -114,17 +117,19 @@ static int __init firewall_init(void){
 	nfho_forward.priority = NF_IP_PRI_FIRST; 
 	nf_register_hook(&nfho_forward);
 
-	struct rule_chain * tmp_chain = create_rule_chain(ntohl(in_aton("119.75.213.61")), 0xFFFF0000, 80, 0, 0x0, ALL_PORT, ALL_POLICY, FW_DROP);
+	struct rule_chain * tmp_chain = create_rule_chain(ntohl(in_aton("119.75.213.61")), 0xFFFF0000, ALL_PORT, 0, 0x0, ALL_PORT, IPPROTO_TCP, FW_DROP);
 	append_rule_chain(&in_chain_head, tmp_chain);
-	out_chain_head = create_rule_chain(0, 0x0, ALL_PORT, 0, 0x0, ALL_PORT, IPPROTO_TCP, FW_ACCEPT);
+	tmp_chain = create_rule_chain(ntohl(in_aton("58.205.212.207")), 0xFFFF0000, ALL_PORT, 0, 0x0, ALL_PORT, IPPROTO_ICMP, FW_DROP);
+	append_rule_chain(&in_chain_head, tmp_chain);
+	out_chain_head = create_rule_chain(0, 0x0, ALL_PORT, 0, 0x0, ALL_PORT, IPPROTO_ICMP, FW_ACCEPT);
 	forward_chain_head = create_rule_chain(0, 0x0, ALL_PORT, 0, 0x0, ALL_PORT, IPPROTO_TCP, FW_ACCEPT);
 	return 0;
 }
 
 static void __exit firewall_exit(void){
-	destroy_rule_chain(&in_chain_head);
-	destroy_rule_chain(&out_chain_head);
-	destroy_rule_chain(&forward_chain_head);
+	delete_rule_chain(&in_chain_head);
+	delete_rule_chain(&out_chain_head);
+	delete_rule_chain(&forward_chain_head);
 	nf_unregister_hook(&nfho_in); //将Local_IN钩子从内核中删除
 	nf_unregister_hook(&nfho_out);
 	nf_unregister_hook(&nfho_forward);
