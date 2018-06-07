@@ -2,15 +2,15 @@
 # Author: ZengLiangwei
 # Email: 747553743@qq.com
  
-obj-m += firewall.o
+obj-m += kernel_firewall_mod.o
  
 KDIR =/usr/src/linux-headers-$(shell uname -r)
- 
+
 all:
 	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules
 install:
-	insmod firewall.ko
+	insmod kernel_firewall_mod.ko
 uninstall:
-	rmmod firewall.ko 
+	rmmod kernel_firewall_mod.ko 
 clean:
 	rm -rf *.o *.ko *.mod.* *.symvers *.order *.cmd .*.cmd .*.swp
