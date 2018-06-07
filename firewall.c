@@ -11,10 +11,11 @@
 #include <linux/netfilter_ipv4.h>
 #include <linux/ip.h>
 #include <linux/inet.h>
-#include "proto_analysis.h"
-#include "rule_chain.h"
-#include "rule_pattern.h"
-#include "kernel_log_io.h"
+#include "lib/proto_analysis.h"
+#include "lib/rule_chain.h"
+#include "lib/rule_pattern.h"
+#include "kernel/kernel_log_io.h"
+#include "kernel/kernel_operate.h"
 
 MODULE_LICENSE("GPL");
 
@@ -24,12 +25,12 @@ static struct nf_hook_ops nfho_out;
 static struct nf_hook_ops nfho_forward;
 
 /* IN,OUT,FORWARD规则链 */ 
-struct rule_chain * in_chain_head = NULL;
-struct rule_chain * out_chain_head = NULL;
-struct rule_chain * forward_chain_head = NULL;
+extern struct rule_chain * in_chain_head;
+extern struct rule_chain * out_chain_head;
+extern struct rule_chain * forward_chain_head;
 
 /* 防火墙开关 */
-bool firewall_switch = true;
+extern bool firewall_switch;
 
 /* 注册的in_hook函数 */
 unsigned int nf_hook_in_func(unsigned int hooknum,
@@ -95,10 +96,6 @@ unsigned int nf_hook_forward_func(unsigned int hooknum,
 
 static int __init firewall_init(void){
 	printk(KERN_INFO "fire wall module init\n");
-	if(read_kernel_file() == 0)
-		printk(KERN_INFO "read file success!\n");
-	else
-		printk(KERN_INFO "read file fail!\n");
 	nfho_in.hook = nf_hook_in_func;         /* 该钩子对应的处理函数 */
 	nfho_in.hooknum  = NF_INET_LOCAL_IN; /* 使用IPv4的LOCAL_IN钩子 */
 	nfho_in.pf       = PF_INET;
@@ -117,19 +114,12 @@ static int __init firewall_init(void){
 	nfho_forward.priority = NF_IP_PRI_FIRST; 
 	nf_register_hook(&nfho_forward);
 
-	struct rule_chain * tmp_chain = create_rule_chain(ntohl(in_aton("119.75.213.61")), 0xFFFF0000, ALL_PORT, 0, 0x0, ALL_PORT, IPPROTO_TCP, FW_DROP);
-	append_rule_chain(&in_chain_head, tmp_chain);
-	tmp_chain = create_rule_chain(ntohl(in_aton("58.205.212.207")), 0xFFFF0000, ALL_PORT, 0, 0x0, ALL_PORT, IPPROTO_ICMP, FW_DROP);
-	append_rule_chain(&in_chain_head, tmp_chain);
-	out_chain_head = create_rule_chain(0, 0x0, ALL_PORT, 0, 0x0, ALL_PORT, IPPROTO_ICMP, FW_ACCEPT);
-	forward_chain_head = create_rule_chain(0, 0x0, ALL_PORT, 0, 0x0, ALL_PORT, IPPROTO_TCP, FW_ACCEPT);
+	firewall_switch_on();//启动防火墙
 	return 0;
 }
 
 static void __exit firewall_exit(void){
-	delete_rule_chain(&in_chain_head);
-	delete_rule_chain(&out_chain_head);
-	delete_rule_chain(&forward_chain_head);
+	firewall_switch_off(); //关闭防火墙
 	nf_unregister_hook(&nfho_in); //将Local_IN钩子从内核中删除
 	nf_unregister_hook(&nfho_out);
 	nf_unregister_hook(&nfho_forward);

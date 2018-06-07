@@ -6,7 +6,6 @@
 #ifndef __KERNEL_LOG_IO_H__
 #define __KERNEL_LOG_IO_H__
 #include <linux/kernel.h>
-#include "command_parse.h"
 
 /* 每次读取内核文件一行 */
 int read_kernel_file_line(struct file * r_file, char * buf, int length){
@@ -50,11 +49,7 @@ int read_kernel_file(void){
 	set_fs(KERNEL_DS);
 	while((count = read_kernel_file_line(log_file, buf, sizeof(buf) - 1)) > 0){
 		buf[count] = '\0';
-		if(!is_comment(buf)){
-			line_strip(buf);
-			printk(KERN_INFO "%s\n", buf);
-			printk(KERN_INFO "%d\n", split_command_line(argv, buf));
-		}
+		printk(KERN_INFO "%s\n", buf);
 	}
 	set_fs(old_fs);
 	filp_close(log_file, NULL);
