@@ -5,9 +5,10 @@
 obj-m += kernel_firewall_mod.o
  
 KDIR =/usr/src/linux-headers-$(shell uname -r)
-
+CXXFLAGS = $(CXXDEBUG) $(CXXWFLAGS) $(ECXXFLAGS) -Wno-strict-aliasing
 all:
 	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules
+	gcc -o firewall firewall.c
 install:
 	insmod kernel_firewall_mod.ko
 uninstall:
