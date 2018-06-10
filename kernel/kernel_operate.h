@@ -35,9 +35,7 @@ int firewall_switch_on(void){
 /* 关闭防火墙 */
 int firewall_switch_off(void){
     if(firewall_switch){
-        delete_rule_chain(&in_chain_head);
-        delete_rule_chain(&out_chain_head);
-        delete_rule_chain(&forward_chain_head);
+        
         firewall_switch = false;
         return FIREWALL_SWITCH_OFF;
     }

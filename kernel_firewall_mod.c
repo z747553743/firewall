@@ -120,7 +120,10 @@ static int __init firewall_init(void){
 
 static void __exit firewall_exit(void){
 	test_netlink_exit();
-    //firewall_switch_off(); //关闭防火墙
+    firewall_switch_off(); //关闭防火墙
+    delete_rule_chain(&in_chain_head);
+    delete_rule_chain(&out_chain_head);
+    delete_rule_chain(&forward_chain_head);
     nf_unregister_hook(&nfho_in); //将Local_IN钩子从内核中删除
     nf_unregister_hook(&nfho_out);
     nf_unregister_hook(&nfho_forward);

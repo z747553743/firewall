@@ -108,11 +108,14 @@ void delete_rule_chain_node(struct rule_chain ** head, struct rule_chain * node)
         return;
     if(*head == node){
         *head = node->next;
-        node->next->pre = NULL;
+        if(node->next != NULL)
+            node->next->pre = NULL;
     }
     else{
-        node->pre->next = node->next;
-        node->next->pre = node->pre;
+        if(node->pre != NULL)
+            node->pre->next = node->next;
+        if(node->next != NULL)
+            node->next->pre = node->pre;
     }
     destroy_rule_chain_node(&node);
 }

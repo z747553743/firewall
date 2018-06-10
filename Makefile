@@ -14,4 +14,4 @@ install:
 uninstall:
 	rmmod kernel_firewall_mod.ko 
 clean:
-	rm -rf *.o *.ko *.mod.* *.symvers *.order *.cmd .*.cmd .*.swp
+	rm -rf *.o *.ko *.mod.* *.symvers *.order *.cmd .*.cmd .*.swp firewall

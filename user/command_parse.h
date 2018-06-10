@@ -49,12 +49,10 @@ int split_command_line(char * argv[], char * command)
 
 /* 将前缀长度转为对应掩码 */
 unsigned int encode_mask(unsigned int prefix_len){
-	unsigned int result = 0x80000000;
-	int i = 1;
+	int result = 0x80000000;
 	if(prefix_len == 0)
 		return 0;
-	for(i = 1; i < prefix_len; i++)
-		result = result >> 1;
+	result = result >> (prefix_len - 1);
 	return result;
 }
 
