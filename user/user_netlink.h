@@ -24,7 +24,7 @@
 struct _my_msg
 {
     struct nlmsghdr hdr;
-    int8_t  data[MSG_LEN];
+    int8_t data[MSG_LEN];
 };
 
 int skfd;

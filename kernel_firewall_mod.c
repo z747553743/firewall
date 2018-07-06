@@ -114,12 +114,12 @@ static int __init firewall_init(void){
     nf_register_hook(&nfho_forward);
 
     //firewall_switch_on();//启动防火墙
-    test_netlink_init();
+    netlink_init();
     return 0;
 }
 
 static void __exit firewall_exit(void){
-	test_netlink_exit();
+	netlink_exit();
     firewall_switch_off(); //关闭防火墙
     delete_rule_chain(&in_chain_head);
     delete_rule_chain(&out_chain_head);

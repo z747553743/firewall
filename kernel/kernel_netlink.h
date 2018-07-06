@@ -21,6 +21,7 @@
 
 extern bool firewall_switch;
 static struct sock *netlinkfd = NULL;
+char ret_msg[KERNEL_MAX_MSG_SIZE];
 
 int send_msg(int8_t *pbuf, uint16_t len)
 {
@@ -69,28 +70,31 @@ static void recv_command(struct sk_buff *skb)
             if(command->todo == SWITCH_ON){
                 ret = firewall_switch_on();
                 if(ret == FIREWALL_SWITCH_ON)
-                    send_msg("swtich on", nlmsg_len(nlh));
+                    send_msg("switch on", 10);
                 else if(ret == ALREADY_SWITCH_ON)
-                    send_msg("already swtich on", nlmsg_len(nlh));
+                    send_msg("already swtich on", 18);
                 else
-                    send_msg("switch on error", nlmsg_len(nlh));
+                    send_msg("switch on error", 16);
             }
             else if(command->todo == SWITCH_OFF){
                 ret = firewall_switch_off();
                 if(ret == FIREWALL_SWITCH_OFF)
-                    send_msg("swtich off", nlmsg_len(nlh));
+                    send_msg("switch off", 11);
                 else if(ret == ALREADY_SWITCH_OFF)
-                    send_msg("already swtich off", nlmsg_len(nlh));
+                    send_msg("already swtich off", 19);
                 else
-                    send_msg("switch off error", nlmsg_len(nlh));
+                    send_msg("switch off error", 17);
             }
             else if(command->todo == CHAIN_OPERATE){
                 if(!chain_operate(&command->info)){
-                    send_msg("ok", nlmsg_len(nlh));
+                    send_msg("ok", 3);
                 }
                 else{
-                    send_msg("error", nlmsg_len(nlh));
+                    send_msg("error", 6);
                 }
+            }
+            else if(command->todo == CHAIN_CHECK){
+
             }
         }
     }
@@ -101,7 +105,7 @@ struct netlink_kernel_cfg cfg =
     .input = recv_command,
 };
 
-int test_netlink_init(void)
+int netlink_init(void)
 {
     printk("init netlink_demo!\n");
     if(netlinkfd == NULL)
@@ -116,7 +120,7 @@ int test_netlink_init(void)
     return 0;
 }
 
-void test_netlink_exit(void)
+void netlink_exit(void)
 {
     if(netlinkfd != NULL)
         sock_release(netlinkfd->sk_socket);

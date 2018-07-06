@@ -10,6 +10,7 @@
 #define SWITCH_ON 0
 #define SWITCH_OFF 1
 #define CHAIN_OPERATE 2
+#define CHAIN_CHECK 3
 
 /* 规则链代号宏 */
 #define COMMAND_INPUT 0
@@ -37,6 +38,11 @@
 /* 通用宏 */
 #define ALL_POLICY 0
 #define ALL_PORT 0
+#define KERNEL_MAX_MSG_SIZE 2048
+
+/* 返回结果类型 */
+#define RET_TEXT 0
+#define RET_CHAIN 1
 
 struct command_info{
     int operation; //规则链操作代号
@@ -56,5 +62,14 @@ struct msg_command{
     struct command_info info;
     unsigned char errcode;
 };
+
+struct ret_info{
+    char msg[KERNEL_MAX_MSG_SIZE];
+};
+
+struct msg_ret{
+    unsigned char type;
+    struct msg_command info;
+}
 
 #endif
